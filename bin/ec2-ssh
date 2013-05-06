@@ -43,7 +43,7 @@ user="${hostparts[0]}"
 
 if [ -z "$inst" ]; then
   inst="$1"
-  user="ubuntu"
+  user=""
 fi
 
 # support tag:value format for identifying instances
@@ -67,4 +67,8 @@ cmd="echo \\\". ~/.bashrc && PS1='\[\e]0;$inst: \w\\\a\]\[\\\033[01;32m\]$inst\[
 if test "${@:2}"; then
     cmd="${@:2}"
 fi
-test -n "$host" && echo "Connecting to $host." && exec sh -c "ssh -t $user@$host \"$cmd\""
+if [ -z "$user" ]; then
+  test -n "$host" && echo "Connecting to $host." && exec sh -c "ssh -t $host \"$cmd\""
+else
+  test -n "$host" && echo "Connecting to $host." && exec sh -c "ssh -t $user@$host \"$cmd\""
+fi
